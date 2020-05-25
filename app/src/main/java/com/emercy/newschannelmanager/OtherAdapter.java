@@ -48,7 +48,6 @@ public class OtherAdapter extends BaseAdapter {
         }
 
         viewHolder.tv.setText(mList.get(position));
-
         return convertView;
     }
 

@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private GridView mUserGv;
     private List<String> mUserList = new ArrayList<>();
     private List<String> mOtherList = new ArrayList<>();
-    private OtherAdapter mChannelAdapter;
+    private OtherAdapter mOtherAdapter;
     private UserAdapter mUserAdapter;
 
     @Override
@@ -52,9 +52,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mOtherList.add("娱乐");
         mOtherList.add("探索");
         mUserAdapter = new UserAdapter(this, mUserList);
-        mChannelAdapter = new OtherAdapter(this, mOtherList);
+        mOtherAdapter = new OtherAdapter(this, mOtherList);
         mUserGv.setAdapter(mUserAdapter);
-        mOtherGv.setAdapter(mChannelAdapter);
+        mOtherGv.setAdapter(mOtherAdapter);
         mUserGv.setOnItemClickListener(this);
         mOtherGv.setOnItemClickListener(this);
     }
@@ -62,6 +62,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (parent == mUserGv) {
+            mOtherList.add(mUserList.remove(position));
 
+        } else {
+            mUserList.add(mOtherList.remove(position));
+        }
+        mUserAdapter.notifyDataSetChanged();
+        mOtherAdapter.notifyDataSetChanged();
     }
 }
