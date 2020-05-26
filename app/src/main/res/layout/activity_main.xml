@@ -79,5 +79,11 @@
             android:scrollbars="vertical"
             android:stretchMode="columnWidth"
             android:verticalSpacing="14.0px" />
+
+        <LinearLayout
+            android:id="@+id/mc"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="horizontal" />
     </LinearLayout>
 </RelativeLayout>
