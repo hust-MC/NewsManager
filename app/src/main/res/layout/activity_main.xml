@@ -15,6 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10.0dip"
             android:layout_marginTop="14.0dip"
+            android:layout_marginRight="10.0dip"
             android:gravity="bottom"
             android:orientation="horizontal">
 
@@ -24,6 +25,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="我的频道"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tv_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:text="编辑"
                 android:textSize="13sp" />
         </LinearLayout>
 
@@ -57,14 +66,15 @@
             android:background="@color/subscribe_item_drag_stroke" />
 
         <TextView
-            android:id="@+id/more_category_text"
+            android:id="@+id/tv_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10.0dip"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="14.0dip"
             android:text="更多频道"
-            android:textSize="13sp" />
+            android:textSize="18sp"
+            android:visibility="invisible" />
 
         <GridView
             android:id="@+id/otherGridView"
@@ -78,12 +88,7 @@
             android:numColumns="4"
             android:scrollbars="vertical"
             android:stretchMode="columnWidth"
-            android:verticalSpacing="14.0px" />
-
-        <LinearLayout
-            android:id="@+id/mc"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:orientation="horizontal" />
+            android:verticalSpacing="14.0px"
+            android:visibility="invisible" />
     </LinearLayout>
 </RelativeLayout>

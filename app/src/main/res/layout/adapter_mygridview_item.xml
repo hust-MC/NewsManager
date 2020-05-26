@@ -3,8 +3,8 @@
     android:id="@+id/rl_subscribe"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:minWidth="72.0dip"
-    android:minHeight="38.0dip">
+    android:minWidth="72dp"
+    android:minHeight="38dp">
 
     <TextView
         android:id="@+id/text_item"
@@ -17,12 +17,15 @@
         android:minHeight="38.0dip"
         android:textColor="@color/subscribe_item_text_color"
         android:textSize="14.0sp" />
-    <!-- android:layout_margin="5dip" -->
 
     <ImageView
-        android:id="@+id/icon_new"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:id="@+id/iv_edit"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignTop="@id/text_item"
+        android:layout_alignRight="@id/text_item"
+        android:layout_marginRight="-5dp"
+        android:src="@mipmap/add"
+        android:visibility="invisible" />
 
 </RelativeLayout>

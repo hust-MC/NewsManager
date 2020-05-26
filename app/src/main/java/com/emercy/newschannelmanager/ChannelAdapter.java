@@ -1,13 +1,14 @@
 package com.emercy.newschannelmanager;
 
 import android.content.Context;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.net.IDN;
 import java.util.List;
 
 public class ChannelAdapter extends BaseAdapter {
@@ -16,15 +17,18 @@ public class ChannelAdapter extends BaseAdapter {
     private Context mContext;
     private int mReadyToRemove = -1;
     private AnimState mAnimState = AnimState.IDLE;
+    private boolean mIsUserChannel;
+    private static boolean mInEditState;
 
     enum AnimState {
         IDLE,
         TRANSLATING
     }
 
-    ChannelAdapter(Context context, List<String> userList) {
+    ChannelAdapter(Context context, List<String> userList, boolean isUserChannel) {
         mContext = context;
         mList = userList;
+        mIsUserChannel = isUserChannel;
     }
 
     @Override
@@ -52,17 +56,28 @@ public class ChannelAdapter extends BaseAdapter {
         if (viewHolder == null) {
             viewHolder = new ViewHolder();
             viewHolder.tv = convertView.findViewById(R.id.text_item);
+            viewHolder.iv = convertView.findViewById(R.id.iv_edit);
             convertView.setTag(viewHolder);
         }
 
         TextView tv = viewHolder.tv;
+        ImageView iv = viewHolder.iv;
+
         if (mReadyToRemove == position
                 || mAnimState == AnimState.TRANSLATING && position == getCount() - 1) {
             tv.setText("");
             tv.setSelected(true);
+            iv.setVisibility(View.INVISIBLE);
         } else {
             tv.setText(mList.get(position));
             tv.setSelected(false);
+        }
+
+        if (mInEditState) {
+            iv.setImageResource(mIsUserChannel ? R.mipmap.substract : R.mipmap.add);
+            iv.setVisibility(View.VISIBLE);
+        } else {
+            iv.setVisibility(View.INVISIBLE);
         }
 
         return convertView;
@@ -96,7 +111,16 @@ public class ChannelAdapter extends BaseAdapter {
         mAnimState = translating ? AnimState.TRANSLATING : AnimState.IDLE;
     }
 
+    public static void setEdit(boolean isEdit) {
+        mInEditState = isEdit;
+    }
+
+    public static boolean isEdit() {
+        return mInEditState;
+    }
+
     private class ViewHolder {
         TextView tv;
+        ImageView iv;
     }
 }

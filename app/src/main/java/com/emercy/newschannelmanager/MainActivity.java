@@ -12,6 +12,8 @@ import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private List<String> mOtherList = new ArrayList<>();
     private ChannelAdapter mOtherAdapter;
     private ChannelAdapter mUserAdapter;
+    private TextView mMoreTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +37,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initView();
     }
 
-
     public void initView() {
+        mMoreTextView = findViewById(R.id.tv_more);
         mUserGv = findViewById(R.id.userGridView);
         mOtherGv = findViewById(R.id.otherGridView);
         mUserList.add("推荐");
@@ -59,52 +62,74 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mOtherList.add("数码");
         mOtherList.add("娱乐");
         mOtherList.add("探索");
-        mUserAdapter = new ChannelAdapter(this, mUserList);
-        mOtherAdapter = new ChannelAdapter(this, mOtherList);
+        mUserAdapter = new ChannelAdapter(this, mUserList, true);
+        mOtherAdapter = new ChannelAdapter(this, mOtherList, false);
         mUserGv.setAdapter(mUserAdapter);
         mOtherGv.setAdapter(mOtherAdapter);
         mUserGv.setOnItemClickListener(this);
         mOtherGv.setOnItemClickListener(this);
+
+        findViewById(R.id.tv_edit).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleEditState();
+            }
+        });
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
 
-        GridView currentView;
-        final GridView anotherView;
+        if (ChannelAdapter.isEdit()) {
 
-        if (parent == mUserGv) {
-            currentView = mUserGv;
-            anotherView = mOtherGv;
-        } else {
-            currentView = mOtherGv;
-            anotherView = mUserGv;
-        }
+            GridView currentView;
+            final GridView anotherView;
 
-        final int[] startPos = new int[2];
-        final int[] endPos = new int[2];
-        view.getLocationInWindow(startPos);
-
-        ChannelAdapter currentAdapter = (ChannelAdapter) currentView.getAdapter();
-        ChannelAdapter anotherAdapter = (ChannelAdapter) anotherView.getAdapter();
-
-        anotherAdapter.setTranslating(true);
-        anotherAdapter.add(currentAdapter.setRemove(position));
-
-        final ImageView cloneView = getCloneView(view);
-        ((ViewGroup) getWindow().getDecorView())
-                .addView(cloneView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-        currentView.post(new Runnable() {
-            @Override
-            public void run() {
-                View lastView = anotherView.getChildAt(anotherView.getChildCount() - 1);
-                lastView.getLocationInWindow(endPos);
-
-                moveAnimation(cloneView, startPos, endPos, ANIM_DURATION);
+            if (parent == mUserGv) {
+                currentView = mUserGv;
+                anotherView = mOtherGv;
+            } else {
+                currentView = mOtherGv;
+                anotherView = mUserGv;
             }
-        });
+
+            final int[] startPos = new int[2];
+            final int[] endPos = new int[2];
+            view.getLocationInWindow(startPos);
+
+            ChannelAdapter currentAdapter = (ChannelAdapter) currentView.getAdapter();
+            ChannelAdapter anotherAdapter = (ChannelAdapter) anotherView.getAdapter();
+
+            anotherAdapter.setTranslating(true);
+            anotherAdapter.add(currentAdapter.setRemove(position));
+
+            final ImageView cloneView = getCloneView(view);
+            ((ViewGroup) getWindow().getDecorView())
+                    .addView(cloneView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            currentView.post(new Runnable() {
+                @Override
+                public void run() {
+                    View lastView = anotherView.getChildAt(anotherView.getChildCount() - 1);
+                    lastView.getLocationInWindow(endPos);
+
+                    moveAnimation(cloneView, startPos, endPos, ANIM_DURATION);
+                }
+            });
+        } else {
+            Toast.makeText(this, "进入" + mUserList.get(position) + "频道", Toast.LENGTH_SHORT).show();
+        }
     }
+
+    private void toggleEditState() {
+        boolean isEdit = ChannelAdapter.isEdit();
+        ChannelAdapter.setEdit(!isEdit);
+        mMoreTextView.setVisibility(isEdit ? View.INVISIBLE : View.VISIBLE);
+        mOtherGv.setVisibility(isEdit ? View.INVISIBLE : View.VISIBLE);
+        mUserAdapter.notifyDataSetChanged();
+        mOtherAdapter.notifyDataSetChanged();
+    }
+
 
     private ImageView getCloneView(View view) {
         // 旧API
