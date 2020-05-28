@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,14 +22,19 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
+    /** 动画持续时长 */
     private static final int ANIM_DURATION = 300;
 
+    /** 双GridView频道列表 */
     private GridView mOtherGv;
     private GridView mUserGv;
+    /** 频道数据 */
     private List<String> mUserList = new ArrayList<>();
     private List<String> mOtherList = new ArrayList<>();
+    /** 频道适配器 */
     private ChannelAdapter mOtherAdapter;
     private ChannelAdapter mUserAdapter;
+
     private TextView mMoreTextView;
 
     @Override
@@ -37,10 +44,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initView();
     }
 
+    /**
+     * 初始化View相关
+     */
     public void initView() {
+        // 1、获取“更多频道”TextView、用户频道GridView以及其他频道GridView
         mMoreTextView = findViewById(R.id.tv_more);
         mUserGv = findViewById(R.id.userGridView);
         mOtherGv = findViewById(R.id.otherGridView);
+        // 2、初始化数据
         mUserList.add("推荐");
         mUserList.add("热点");
         mUserList.add("上海");
@@ -62,17 +74,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mOtherList.add("数码");
         mOtherList.add("娱乐");
         mOtherList.add("探索");
+
+        // 3、初始化适配器，并为双GridView设置适配器
         mUserAdapter = new ChannelAdapter(this, mUserList, true);
         mOtherAdapter = new ChannelAdapter(this, mOtherList, false);
         mUserGv.setAdapter(mUserAdapter);
         mOtherGv.setAdapter(mOtherAdapter);
+        // 4、设置GridView列表点击监听
         mUserGv.setOnItemClickListener(this);
         mOtherGv.setOnItemClickListener(this);
 
+        // 5、设置“编辑”Button的点击事件监听
         findViewById(R.id.tv_edit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // 点击“编辑”Button 进入/退出编辑态
                 toggleEditState();
+                ((ImageView) v).setImageResource(ChannelAdapter.isEdit() ? R.mipmap.ok : R.mipmap.edit);
             }
         });
     }
@@ -80,8 +98,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
 
+        // 判断是否为编辑态：
+        // 如果是编辑态则点击的时候处理删除 / 增加操作
+        // 如果不是编辑态则弹出Toast提示，实际使用中可以换成频道详情页的跳转
         if (ChannelAdapter.isEdit()) {
 
+            // currentView表示当前被点击的GridView，anotherView表示另外一个GridView；
+            // 这里统一定义current和anOther，后续无论点击的是哪一个列表均可共用同一套逻辑
             GridView currentView;
             final GridView anotherView;
 
@@ -93,13 +116,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 anotherView = mUserGv;
             }
 
+            // 计算点击View的坐标，用作后面动画的起点
             final int[] startPos = new int[2];
             final int[] endPos = new int[2];
             view.getLocationInWindow(startPos);
 
+            // 和GridView的处理一样，这里统一定义
             ChannelAdapter currentAdapter = (ChannelAdapter) currentView.getAdapter();
             ChannelAdapter anotherAdapter = (ChannelAdapter) anotherView.getAdapter();
 
+            //
             anotherAdapter.setTranslating(true);
             anotherAdapter.add(currentAdapter.setRemove(position));
 
@@ -124,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void toggleEditState() {
         boolean isEdit = ChannelAdapter.isEdit();
         ChannelAdapter.setEdit(!isEdit);
+
         mMoreTextView.setVisibility(isEdit ? View.INVISIBLE : View.VISIBLE);
         mOtherGv.setVisibility(isEdit ? View.INVISIBLE : View.VISIBLE);
         mUserAdapter.notifyDataSetChanged();
