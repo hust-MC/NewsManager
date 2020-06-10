@@ -24,7 +24,6 @@
         android:layout_height="20dp"
         android:layout_alignTop="@id/text_item"
         android:layout_alignRight="@id/text_item"
-        android:layout_marginRight="-5dp"
         android:src="@mipmap/add"
         android:visibility="invisible" />
 
