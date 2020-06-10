@@ -2,6 +2,7 @@ package com.emercy.newschannelmanager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.media.Image;
@@ -17,21 +18,37 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    /** 动画持续时长 */
+    /**
+     * 动画持续时长
+     */
     private static final int ANIM_DURATION = 300;
+    private static final String CHANNEL_DATA_FILE = "channel_data.json";
 
-    /** 双GridView频道列表 */
+    /**
+     * 双GridView频道列表
+     */
     private GridView mOtherGv;
     private GridView mUserGv;
-    /** 频道数据 */
+    /**
+     * 频道数据
+     */
     private List<String> mUserList = new ArrayList<>();
     private List<String> mOtherList = new ArrayList<>();
-    /** 频道适配器 */
+    /**
+     * 频道适配器
+     */
     private ChannelAdapter mOtherAdapter;
     private ChannelAdapter mUserAdapter;
 
@@ -52,28 +69,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mMoreTextView = findViewById(R.id.tv_more);
         mUserGv = findViewById(R.id.userGridView);
         mOtherGv = findViewById(R.id.otherGridView);
+
         // 2、初始化数据
-        mUserList.add("推荐");
-        mUserList.add("热点");
-        mUserList.add("上海");
-        mUserList.add("时尚");
-        mUserList.add("科技");
-        mUserList.add("体育");
-        mUserList.add("军事");
-        mUserList.add("财经");
-        mUserList.add("网络");
-        mOtherList.add("汽车");
-        mOtherList.add("房产");
-        mOtherList.add("社会");
-        mOtherList.add("情感");
-        mOtherList.add("女人");
-        mOtherList.add("旅游");
-        mOtherList.add("健康");
-        mOtherList.add("美女");
-        mOtherList.add("游戏");
-        mOtherList.add("数码");
-        mOtherList.add("娱乐");
-        mOtherList.add("探索");
+        try {
+            InputStream is = getAssets().open(CHANNEL_DATA_FILE);
+            int length = is.available();
+            byte[] buffer = new byte[length];
+            is.read(buffer);
+            String result = new String(buffer, "utf-8");
+            JSONObject jsonObject = new JSONObject(result);
+            JSONArray userChannel = jsonObject.optJSONArray("user");
+            for (int i = 0; i < userChannel.length(); i++) {
+                mUserList.add(userChannel.optString(i));
+            }
+            JSONArray otherChannel = jsonObject.optJSONArray("other");
+            for (int i = 0; i < otherChannel.length(); i++) {
+                mOtherList.add(otherChannel.optString(i));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         // 3、初始化适配器，并为双GridView设置适配器
         mUserAdapter = new ChannelAdapter(this, mUserList, true);

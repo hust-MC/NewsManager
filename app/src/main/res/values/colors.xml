@@ -9,19 +9,15 @@
 
     <color name="text_color_pressed">#ffcc3131</color>
     <color name="default_text">#ff454545</color>
-
+    <color name="common_stroke">#ffd2d2d2</color>
+    <color name="common_bg">#fff5f5f5</color>
     <color name="selected_bg">#ffffffff</color>
     <color name="selected_stroke">#ffcc3131</color>
-
     <color name="disabled_bg">#ffefefef</color>
     <color name="disabled_stroke">#ffd9d9d9</color>
-
     <color name="pressed_bg">#fff9f9f9</color>
     <color name="pressed_stroke">#ffcdcdcd</color>
-
     <color name="normal_bg">#fff5f5f5</color>
     <color name="normal_stroke">#ffcdcdcd</color>
 
-    <color name="common_stroke">#ffd2d2d2</color>
-    <color name="common_bg">#fff5f5f5</color>
 </resources>
