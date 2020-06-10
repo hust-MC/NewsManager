@@ -38,7 +38,7 @@
         android:layout_height="0.5dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="14.0dip"
-        android:background="@color/subscribe_item_drag_stroke" />
+        android:background="@color/common_stroke" />
 
     <GridView
         android:id="@+id/userGridView"
@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginTop="10dp"
-        android:background="@color/subscribe_item_drag_stroke" />
+        android:background="@color/common_stroke" />
 
     <TextView
         android:id="@+id/tv_more"
